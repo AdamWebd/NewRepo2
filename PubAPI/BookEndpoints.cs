@@ -18,9 +18,11 @@ public static class BookEndpoints
         .WithName("GetAllBooks")
         .WithOpenApi();
 
-        group.MapGet("/{id}", async Task<Results<Ok<Book>, NotFound>> (int bookid, PubContext db) =>
+        group.MapGet("/{BookId}", async Task<Results<Ok<Book>, NotFound>> (int bookid, PubContext db) =>
         {
-            return await db.Books.AsNoTracking()
+            return await db.Books
+                .Include(b => b.Author)
+                .Include(b => b.Cover)  
                 .FirstOrDefaultAsync(model => model.BookId == bookid)
                 is Book model
                     ? TypedResults.Ok(model)
@@ -29,12 +31,11 @@ public static class BookEndpoints
         .WithName("GetBookById")
         .WithOpenApi();
 
-        group.MapPut("/{id}", async Task<Results<Ok, NotFound>> (int bookid, Book book, PubContext db) =>
+        group.MapPut("/{BookId}", async Task<Results<Ok, NotFound>> (int bookid, Book book, PubContext db) =>
         {
             var affected = await db.Books
                 .Where(model => model.BookId == bookid)
                 .ExecuteUpdateAsync(setters => setters
-                    .SetProperty(m => m.BookId, book.BookId)
                     .SetProperty(m => m.Title, book.Title)
                     .SetProperty(m => m.PublishDate, book.PublishDate)
                     .SetProperty(m => m.BasePrice, book.BasePrice)
@@ -54,7 +55,7 @@ public static class BookEndpoints
         .WithName("CreateBook")
         .WithOpenApi();
 
-        group.MapDelete("/{id}", async Task<Results<Ok, NotFound>> (int bookid, PubContext db) =>
+        group.MapDelete("/{BookId}", async Task<Results<Ok, NotFound>> (int bookid, PubContext db) =>
         {
             var affected = await db.Books
                 .Where(model => model.BookId == bookid)

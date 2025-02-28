@@ -45,7 +45,9 @@ public class PubContext : DbContext
         var someArtists = new Artist[]{
             new Artist {ArtistId = 1, FirstName = "Pablo", LastName="Picasso"},
             new Artist {ArtistId = 2, FirstName = "Dee", LastName="Bell"},
-            new Artist {ArtistId = 3, FirstName ="Katharine", LastName="Kuharic"} };
+            new Artist {ArtistId = 3, FirstName ="Katharine", LastName="Kuharic"},
+            new Artist {ArtistId = 4, FirstName = "Adam", LastName="Nilsson"},
+            new Artist {ArtistId = 5, FirstName = "Robert", LastName="Persson"}};
         modelBuilder.Entity<Artist>().HasData(someArtists);
 
         var someCovers = new Cover[]{
